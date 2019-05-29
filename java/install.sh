@@ -59,7 +59,7 @@ before(){
     cd /opt/dev_tools
     wget https://dev.tencent.com/u/gclm/p/shell/git/raw/master/java/jdk-8u181-linux-x64.tar.gz
     wget https://dev.tencent.com/u/gclm/p/shell/git/raw/master/java/apache-tomcat-8.5.40.tar.gz
-    wget https://dev.tencent.com/u/gclm/p/shell/git/raw/master/java/apache-tomcat-9.0.19.tar.gz
+    wget https://dev.tencent.com/u/gclm/p/shell/git/raw/master/java/apache-maven-3.6.1-bin.tar.gz
     # 解压
     tar zxvf jdk-8u181-linux-x64.tar.gz
     tar zxvf apache-tomcat-8.5.40.tar.gz
@@ -78,8 +78,8 @@ java(){
 cat>>/etc/profile<<EOF
 export JAVA_HOME=/opt/dev_tools/jdk1.8.0_181
 export M2_HOME=/opt/dev_tools/apache-maven-3.6.1
-export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
-export PATH=$PATH:$JAVA_HOME/bin:$M2_HOME/bin:
+export CLASSPATH=.:\$JAVA_HOME/lib/dt.jar:\$JAVA_HOME/lib/tools.jar
+export PATH=\$PATH:\$JAVA_HOME/bin:\$M2_HOME/bin:
 EOF
     # 刷新配置
     source /etc/profile
