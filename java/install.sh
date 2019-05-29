@@ -71,12 +71,16 @@ openjdk(){
 }
 
 java(){
+    echo "修改环境变量"
     # 复制
     cp /etc/profile /etc/profile.gclm
     # 写入文本
-    wget https://dev.tencent.com/u/gclm/p/shell/git/raw/master/java/environment.txt
-    # > 代表覆盖  >> 代表在结尾添加
-    cat  environment.txt >> /etc/profile
+cat>>/etc/profile<<EOF
+export JAVA_HOME=/opt/dev_tools/jdk1.8.0_181
+export M2_HOME=/opt/dev_tools/apache-maven-3.6.1
+export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+export PATH=$PATH:$JAVA_HOME/bin:$M2_HOME/bin:
+EOF
     # 刷新配置
     source /etc/profile
 }
