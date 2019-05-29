@@ -54,7 +54,7 @@ before(){
     elif [[ "${release}" = "ubuntu" || "${release}" = "debian" ]];then
         apt-get install -y curl wget
     fi
-
+    rm -rf /opt/dev_tools
     mkdir  /opt/dev_tools
     cd /opt/dev_tools
     wget https://dev.tencent.com/u/gclm/p/shell/git/raw/master/java/jdk-8u181-linux-x64.tar.gz
