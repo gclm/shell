@@ -104,7 +104,7 @@ main(){
     read -p "输入数字以选择 :" num
     case "$num" in
         1)
-            uninstall_java
+            # uninstall_java
             before
             java
             sleep 2s
