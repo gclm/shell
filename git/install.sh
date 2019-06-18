@@ -52,5 +52,42 @@ install(){
     fi
 }
 
+#start menu
+main(){
+    root
+    system
+    version
+    clear
+    echo -e "———————————————————————————————————————"
+    echo -e "${Blue} 孤城落寞 Git 环境 一键脚本 for Centos ${Font}"
+    echo -e "${Blue}当前系统: ${release} 版本: ${version} 位数:${bit} ${Font}"
+    echo -e "${Blue}1、一键安装 Git 环境  ${Font}"
+    echo -e "${Blue}2、一键卸载 Git 环境 ${Font}"
+    echo -e "${Blue}0、退出脚本${Font}"
+    echo -e "———————————————————————————————————————"
+    read -p "输入数字以选择 :" num
+    case "$num" in
+        1)
+            initialization
+            uninstall
+            install
+        ;;
+        2)
+            uninstall
+        ;;
+        0)
+            exit 1
+        ;;
+        *)
+        clear
+        echo -e "${Red} 无效输入，请重新选择 ${Font}"
+        sleep 2s
+        main
+        ;;
+        esac
+}
+
+main
+
 
 
