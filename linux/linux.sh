@@ -1,6 +1,4 @@
-#!/usr/bin/env bash
-PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
-export PATH
+#!/bin/bash
 
 #=================================================
 #	System Required: CentOS 7,Debian 8/9,Ubuntu 16+
@@ -45,6 +43,43 @@ coding="https://dev.tencent.com/u/gclm/p/shell/git/raw/master"
 
 
 #############系统开发环境组件 start #############
+
+#================== git =============================
+
+# 安装 git
+git(){
+    echo ""
+    uninstall
+    mkdir  /opt/dev_soft
+    # mkdir -p /opt/soft/git
+    cd /opt/dev_soft
+	wget https://dev.tencent.com/u/gclm/p/shell/git/raw/master/git/git-2.9.5.tar.gz
+	tar zxvf git-2.9.5.tar.gz
+	cd git-2.9.5
+	./configure --prefix=/usr/local/git
+	make && make install
+	ln -s /usr/local/git/bin/* /usr/bin/
+    echo "export PATH=/usr/local/git/bin:$PATH" >> /etc/profile
+    source /etc/profile
+    git_version=`git --version`
+   
+}
+
+# 卸载git
+uninstall_git(){
+    echo -e "开始卸载卸载git"
+	yum remove git
+    rm -rf /opt/dev_soft/git-2.9.5
+	rm -rf /usr/local/git
+	rm -rf /usr/local/git/bin/git
+	rm -rf /usr/local/git/bin/git-cvsserver
+	rm -rf /usr/local/git/bin/gitk
+	rm -rf /usr/local/git/bin/git-receive-pack
+	rm -rf /usr/local/git/bin/git-shell
+	rm -rf /usr/local/git/bin/git-upload-archive
+	rm -rf /usr/local/git/bin/git-upload-pack
+    echo "git 卸载完成"
+}
 
 #================== jdk =============================
 
@@ -117,32 +152,31 @@ maven(){
     maven_file =$(ls | grep apache*maven-*.gz)
 
 
-    if [ -f "$mvnfile" ]; then
+    if [ -f "$maven_file" ]; then
 
         #这个名字其实就是mvn .tar.gz解压之后的文件夹的名字
         mvndirname="apache-maven-3.6.0"
 
         #不能加 用'zxvf' 加了 z 就创建了包里面的apace* 文件夹，而我们只要把apace*文件夹下的文件全部解压到 maven_path里面就好
-        tar zxvf $mvnfile -C $maven_path
+        tar zxvf $maven_file -C $maven_path
 
-        echo "安装maven成功"
+        echo -e "安装maven成功"
         echo "配置环境变量"
 
         mv ~/.bashrc ~/.bashrc.backup.mvn
         cat ~/.bashrc.backup.mvn >> ~/.bashrc
 
-        echo "PATH=\"$PATH:$maven_path/$mvndirname/bin\"" >> ~/.bashrc
-        echo "MAVEN_HOME=$maven_path/$mvndirname" >> ~/.bashrc
+        echo -e "PATH=\"$PATH:$maven_path/$mvndirname/bin\"" >> ~/.bashrc
+        echo -e "MAVEN_HOME=$maven_path/$mvndirname" >> ~/.bashrc
 
         source ~/.bashrc
 
-        echo "配置环境成功"
-        echo "测试是否安装成功"
+        echo -e "配置环境成功"
+        echo -e "测试是否安装成功"
         mvn -v
-        echo "安装成功"
+        echo -e "安装成功"
     else
-        echo "没有找到maven文件"
-
+        echo -e "没有找到maven文件"
     fi
 }
 
@@ -169,7 +203,6 @@ init(){
         init_debain_ubuntu
     fi
 }
-
 
 # 基础环境组件 centos
 init_centos(){ 
@@ -199,7 +232,6 @@ init_debain_ubuntu(){
     apt-get install -y curl wget
     echo -e "安装 ---> wget 完成"   
 }
-
 
 #更新脚本
 Update_Shell(){
