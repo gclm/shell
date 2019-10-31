@@ -61,6 +61,24 @@ compile(){
     yum -y install gcc gcc-c++ make libtool zlib zlib-devel openssl openssl-devel pcre pcre-devel curl-devel expat-devel gettext-devel perl-ExtUtils-MakeMaker
 }
 
+#================== MySQL =============================
+mysql(){
+    init 
+
+    mysql_uninstall
+
+}
+
+mysql_uninstall(){
+    echo -e "${Info}:开始卸载mysql"
+    dpkg --list | grep mysql
+    sudo apt-get -y  remove mysql-common
+    sudo apt-get -y autoremove --purge mysql-server-5.7
+    dpkg -l | grep ^rc | awk '{print$2}' | sudo xargs dpkg -P
+    dpkg --list | grep mysql
+    sudo apt-get -y autoremove --purge mysql-apt-config
+}
+
 #================== jenkins =============================
 
 jenkins(){
@@ -402,7 +420,7 @@ Linux开发环境 一键安装管理脚本 ${Red_font_prefix}[v${shell_version}]
  ${Green_font_prefix}14.${Font_color_suffix} 安装 Nexus(v${nexus_version}) 
  ${Green_font_prefix}15.${Font_color_suffix} 安装 Gradle(v${gradle_version}) 
  ${Green_font_prefix}16.${Font_color_suffix} 安装 MySQL(v${mysql_version})
- ${Green_font_prefix}16.${Font_color_suffix} 安装 Tomcat(v${tomcat_version})
+ ${Green_font_prefix}17.${Font_color_suffix} 安装 Tomcat(v${tomcat_version})
 ———————————— 运维环境 —————————————————
  ${Green_font_prefix}21.${Font_color_suffix} 安装 Git
  ${Green_font_prefix}22.${Font_color_suffix} 安装 Jenkins
@@ -440,7 +458,7 @@ case "$num" in
 	startbbrmod
 	;;
 	16)
-	startbbrmod_nanqinlang
+	mysql
 	;;
     21)
 	git_install
