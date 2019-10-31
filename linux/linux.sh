@@ -24,7 +24,7 @@ soft_path="/opt/software"
 module_path="/opt/module"
 
 # 版本
-shell_version="1.0.0"
+shell_version="0.0.1"
 maven_version="3.6.2"
 jdk_version="221"
 tomcat_version="9.0.19"
@@ -62,7 +62,7 @@ compile(){
 #================== git =============================
 
 # 安装 git
-git(){
+git_install(){
     echo -e "${Info}: 开始安装 Git v${git_version}"
 
     git_uninstall
@@ -82,25 +82,28 @@ git(){
     tar zxvf git-${git_version}.tar.gz
     cd git-${git_version}
 
-    echo -e "${Info}:开始编译安装 git "
-
-    ./configure --prefix=$git_path
-
+    echo -e "${Info}:编译安装git --> configure "
+	./configure --prefix=/usr/local/git
+    echo -e "${Info}:编译安装git --> make"
+	make  
+    echo -e "${Info}:编译安装git --> make install"
+    make install
+    echo -e "${Info}:ln -sf /usr/local/git/bin/* /usr/bin/"
     # -f, --force remove existing destination files
-    ln -sf $git_path/bin/* /usr/bin/
+    ln -sf /usr/local/git/bin/* /usr/bin/
 
     echo -e "${Info}:配置环境变量"
-    echo "export PATH=$git_path/bin:$PATH" >> /etc/profile
+    echo "export PATH=$PATH:/usr/local/git/bin:" >> /etc/profile
     source /etc/profile
 
     echo -e "${Info}:测试是否安装成功"
     git --version
-
+    exit 1 
 }
 
 git_lfs(){
     git_shell=`command -v git`
-    if [[ ${git_shell} == "/usr/local/git/bin/git" ||  ]]; then
+    if [[ ${git_shell} == "/usr/local/git/bin/git" || ${git_shell} == "/usr/bin/git" ]]; then
         git_lfs_install
     else
         echo -e "${Info}:no exists git，是否安装 git 后在进行安装 Git lfs ？[Y/n]"
@@ -131,6 +134,7 @@ git_uninstall(){
 	rm -rf $git_path
     rm -rf $soft_path/git-${git_version}
     rm -rf $soft_path/git-${git_version}.tar.gz
+    sed -i '/git/d' /etc/profile
 }
 #================== jdk =============================
 
@@ -362,8 +366,8 @@ case "$num" in
 	16)
 	startbbrmod_nanqinlang
 	;;
-	21)
-	git
+    21)
+	git_install
 	;;
 	22)
 	startlotserver
