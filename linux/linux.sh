@@ -220,7 +220,7 @@ maven(){
     tar -zxvf apache-maven-${maven_version}-bin.tar.gz -C $java_Path
     
     echo -e "${Info}:配置环境变量"
-    echo -e "export M2_HOME=$java_path/$maven_dirname" >> /etc/profile
+    echo -e "export M2_HOME=/usr/local/java/$maven_dirname" >> /etc/profile
     echo -e "export PATH=\$PATH:\$M2_HOME/bin:" >> /etc/profile
     source /etc/profile
 
