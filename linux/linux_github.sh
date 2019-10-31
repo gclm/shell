@@ -37,9 +37,7 @@ git_version="2.9.5"
 github="https://raw.githubusercontent.com/gclm/shell/master"
 coding="https://dev.tencent.com/u/gclm/p/shell/git/raw/master"
 
-
 #==================基础配置 end =============================
-
 
 #############系统开发环境组件 start #############
 
@@ -76,7 +74,7 @@ git_install(){
 
     if [ ! -f "$git_file" ]; then
         echo -e "${Info}:正在下载git请稍等..."
-        wget -N --no-check-certificate ${coding}/linux/git/git-${git_version}.tar.gz
+        wget -N --no-check-certificate ${github}/linux/git/git-${git_version}.tar.gz
     fi
 
     tar zxvf git-${git_version}.tar.gz
@@ -152,7 +150,7 @@ jdk(){
 
     if [ ! -f "$jdk_file" ]; then
         echo -e "${Info}: 正在下载jdk请稍等..."
-        wget -N --no-check-certificate ${coding}/linux/java/jdk-8u${jdk_version}-linux-x64.tar.gz
+        wget -N --no-check-certificate ${github}/linux/java/jdk-8u${jdk_version}-linux-x64.tar.gz
     fi
 
     echo -e "${Info}: 开始安装JDK"
@@ -213,7 +211,7 @@ maven(){
 
     if [ ! -f "$maven_file" ]; then
        echo -e "${Info}:正在下载 Maven 安装包，请稍等..."
-       wget -N --no-check-certificate ${coding}/linux/java/apache-maven-${maven_version}-bin.tar.gz
+       wget -N --no-check-certificate ${github}/linux/java/apache-maven-${maven_version}-bin.tar.gz
     fi
 
     echo -e "${Info}: 开始安装 Maven "
