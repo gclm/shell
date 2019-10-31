@@ -159,7 +159,6 @@ jdk(){
     tar -zxvf jdk-8u${jdk_version}-linux-x64.tar.gz -C $java_Path
    
     echo -e "${Info}: 配置环境变量"
-    cp /etc/profile /etc/profile.backup
     echo -e "export JAVA_HOME=$java_Path/$jdk_dirname" >> /etc/profile
     echo -e "export CLASSPATH=.:\$JAVA_HOME/lib/dt.jar:\$JAVA_HOME/lib/tools.jar" >> /etc/profile
     echo -e "export PATH=\$PATH:\$JAVA_HOME/bin:" >> /etc/profile
@@ -234,8 +233,9 @@ maven(){
 maven_uninstall(){
     echo -e "${Info}:开始卸载原有 maven 组件"
 	rm -rf $java_Path/apache-maven-${maven_version}
-    # rm -rf $soft_path/apache-maven-${maven_version}-bin.tar.gz
+    rm -rf $soft_path/apache-maven-${maven_version}-bin.tar.gz
     sed -i '/M2_HOME/d' /etc/profile
+    source /etc/profile
 }
 
 #############系统开发环境组件  end #############
