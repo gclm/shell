@@ -25,12 +25,12 @@ soft_path="/opt/software"
 module_path="/opt/module"
 
 # 版本
-shell_version="0.0.3"
+shell_version="0.0.4"
 maven_version="3.6.2"
 jdk_version="221"
 tomcat_version="9.0.19"
 gradle_version=""
-nuxus_version="3.19.1-01"
+nexus_version="3.19.1-01"
 mysql_version=""
 git_version="2.9.5"
 
@@ -61,9 +61,18 @@ compile(){
     yum -y install gcc gcc-c++ make libtool zlib zlib-devel openssl openssl-devel pcre pcre-devel curl-devel expat-devel gettext-devel perl-ExtUtils-MakeMaker
 }
 
-#================== git =============================
+#================== jenkins =============================
 
-Nexus(){
+jenkins(){
+    echo -e "${Info}: 开始安装 Jenkins"
+    wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+    rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+    yum install -y jenkins
+}
+
+#================== nexus =============================
+
+nexus(){
 
     init
 
@@ -75,21 +84,47 @@ Nexus(){
     fi
 
     # 增加新用户
+    echo -e "${Info}:创建用户/用户组 nexus 并授权"
     groupadd nexus
     useradd -g nexus nexus
+    chown -R nexus:nexus /usr/local/nexus
 
     cd $soft_path
 
     nexus_file=$(ls | grep nexus-*-unix.tar.gz)
-    Nexus_dirname="nexus-${Nexus_version}"
+    nexus_dirname="nexus-${nexus_version}"
 
     if [ ! -f "$nexus_file" ]; then
         echo -e "${Info}:正在下载 nexus 请稍等..."
-        wget -N --no-check-certificate ${coding}/linux/nexus/nexus-${Nexus_version}-unix.tar.gz
+        wget -N --no-check-certificate ${coding}/linux/nexus/nexus-${nexus_version}-unix.tar.gz
     fi
 
-    tar zxvf nexus-${Nexus_version}-unix.tar.gz -C $nexus_path
+    tar zxvf nexus-${nexus_version}-unix.tar.gz -C $nexus_path
+    mv $nexus_path/sonatype-work /opt
     
+    echo -e "${Info}:配置环境变量"
+    echo -e "export NEXUS_HOME=$nexus_path/$nexus_dirname" >> /etc/profile
+    echo -e "export PATH=\$PATH:\$NEXUS_HOME/bin:" >> /etc/profile
+
+    source /etc/profile
+
+    echo -e "${Info}:修改配置"
+    echo "run_as_user=\"nexus\"" > $nexus_path/$nexus_dirname/bin/nexus.rc
+    # 仓库目录(可选)
+    sed -i 's/-Dkaraf.data=..\/sonatype-work\/nexus3/-Dkaraf.data=/opt/sonatype-work/g'  $nexus_path/$nexus_dirname/bin/nexus.vmoptions
+    # Java启动环境变量(必须要具体地址，不能用变量)
+    sed -i 's/# INSTALL4J_JAVA_HOME_OVERRIDE=/INSTALL4J_JAVA_HOME_OVERRIDE=/usr/local/java/jdk1.8.0_221/g' $nexus_path/$nexus_dirname/bin/nexus
+
+    echo -e "${Info}:创建开机启动项"
+    ln -sf /usr/local/Nexus/bin/nexus /etc/init.d/nexus
+    chkconfig --add nexus
+    chkconfig nexus on
+    
+    echo -e "${Info}:启动"
+    # 启动
+    service nexus start
+    #  调试输出
+    # service nexus run
 }
 
 # 安装 git
@@ -229,7 +264,7 @@ jdk_uninstall(){
 	rm -rf $java_Path/jdk1.8.0_${jdk_version}
     rm -rf $soft_path/jdk-8u${jdk_version}-linux-x64.tar.gz
     # 判断是否有需要删除的字符串
-    if sed -n '/JAVA_HOME/p' /etc/profile > /dev/null ; then
+    if [ sed -n '/JAVA_HOME/p' /etc/profile ]; then
         sed -i '/JAVA_HOME/d' /etc/profile
         source /etc/profile
     fi
@@ -334,14 +369,14 @@ init_debain_ubuntu(){
 #更新脚本
 Update_Shell(){
 	echo -e "当前版本为 [ ${shell_version} ]，开始检测最新版本..."
-	shell_new_version=$(wget --no-check-certificate -qO- "http://${github}/tcp.sh"|grep 'shell_version="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1)
+	shell_new_version=$(wget --no-check-certificate -qO- "http://${coding}/linux/linux.sh"|grep 'shell_version="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1)
 	[[ -z ${shell_new_version} ]] && echo -e "${Error} 检测最新版本失败 !" && start_menu
 	if [[ ${shell_new_version} != ${shell_version} ]]; then
 		echo -e "发现新版本[ ${shell_new_version} ]，是否更新？[Y/n]"
 		read -p "(默认: y):" yn
 		[[ -z "${yn}" ]] && yn="y"
 		if [[ ${yn} == [Yy] ]]; then
-			wget -N --no-check-certificate http://${github}/tcp.sh && chmod +x tcp.sh
+			wget -N --no-check-certificate http://${github}/linux/linux.sh && chmod +x linux.sh
 			echo -e "脚本已更新为最新版本[ ${shell_new_version} ] !"
 		else
 			echo && echo "	已取消..." && echo
@@ -364,7 +399,7 @@ Linux开发环境 一键安装管理脚本 ${Red_font_prefix}[v${shell_version}]
  ${Green_font_prefix}11.${Font_color_suffix} 安装 Oracle-JDK(v8u${jdk_version})
  ${Green_font_prefix}12.${Font_color_suffix} 安装 Open-JDK(v1.8.0)
  ${Green_font_prefix}13.${Font_color_suffix} 安装 Maven(v${maven_version})
- ${Green_font_prefix}14.${Font_color_suffix} 安装 Nuxus(v${nuxus_version}) 
+ ${Green_font_prefix}14.${Font_color_suffix} 安装 Nexus(v${nexus_version}) 
  ${Green_font_prefix}15.${Font_color_suffix} 安装 Gradle(v${gradle_version}) 
  ${Green_font_prefix}16.${Font_color_suffix} 安装 MySQL(v${mysql_version})
  ${Green_font_prefix}16.${Font_color_suffix} 安装 Tomcat(v${tomcat_version})
@@ -399,7 +434,7 @@ case "$num" in
 	maven
 	;;
 	14)
-	startbbr
+	nexus
 	;;
 	15)
 	startbbrmod
@@ -411,7 +446,7 @@ case "$num" in
 	git_install
 	;;
 	22)
-	startlotserver
+	jenkins
 	;;
 	23)
 	remove_all
