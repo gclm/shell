@@ -24,7 +24,7 @@ soft_path="/opt/software"
 module_path="/opt/module"
 
 # 版本
-shell_version="0.0.1"
+shell_version="0.0.2"
 maven_version="3.6.2"
 jdk_version="221"
 tomcat_version="9.0.19"
@@ -194,6 +194,7 @@ jdk_uninstall(){
 	rm -rf $java_Path/jdk1.8.0_${jdk_version}
     rm -rf $soft_path/jdk-8u${jdk_version}-linux-x64.tar.gz
     sed -i '/JAVA_HOME/d' /etc/profile
+    source /etc/profile
 }
 
 #================== maven =============================
