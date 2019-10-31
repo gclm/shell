@@ -17,22 +17,21 @@ Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 # 安装路径
-base_path = "/usr/local"
-jdk_Path = "$base_path/java"
-maven_path = "$base_path/maven"
-gradle_path ="$base_path/gradle"
-tomcat_path = "$base_path/tomcat"
-nuxus_path = "$base_path/nuxus"
-git_path = "$base_path/git"
+base_path="/usr/local"
+java_Path="$base_path/java"
+git_path="$base_path/git"
+soft_path="/opt/software"
+module_path="/opt/module"
 
 # 版本
 shell_version="1.0.0"
 maven_version="3.6.2"
-jdk_version="8u221"
+jdk_version="221"
 tomcat_version="9.0.19"
 gradle_version=""
 nuxus_version=""
 mysql_version=""
+git_version="2.9.5"
 
 # 远程安装包地址
 github="https://raw.githubusercontent.com/gclm/shell/master"
@@ -44,142 +43,195 @@ coding="https://dev.tencent.com/u/gclm/p/shell/git/raw/master"
 
 #############系统开发环境组件 start #############
 
+java(){
+    # 初始化安装目录
+    if [ ! -d "$java_Path" ]; then
+        echo -e "正在创建$java_Path目录"
+        mkdir -p $java_Path
+        echo -e "目录$java_Path创建成功"
+    fi
+}
+
+compile(){
+    echo -e "${Info}:安装开发工具---> Development Tools"
+    yum -y groupinstall 'Development Tools'
+    echo -e "${Info}:安装系统编译组件 ---> gcc gcc-c++ make libtool zlib zlib-devel openssl openssl-devel pcre pcre-devel curl-devel expat-devel gettext-devel perl-ExtUtils-MakeMaker"
+    yum -y install gcc gcc-c++ make libtool zlib zlib-devel openssl openssl-devel pcre pcre-devel curl-devel expat-devel gettext-devel perl-ExtUtils-MakeMaker
+}
+
 #================== git =============================
 
 # 安装 git
 git(){
-    echo ""
-    uninstall
-    mkdir  /opt/dev_soft
-    # mkdir -p /opt/soft/git
-    cd /opt/dev_soft
-	wget https://dev.tencent.com/u/gclm/p/shell/git/raw/master/git/git-2.9.5.tar.gz
-	tar zxvf git-2.9.5.tar.gz
-	cd git-2.9.5
-	./configure --prefix=/usr/local/git
-	make && make install
-	ln -s /usr/local/git/bin/* /usr/bin/
-    echo "export PATH=/usr/local/git/bin:$PATH" >> /etc/profile
+    echo -e "${Info}: 开始安装 Git v${git_version}"
+
+    git_uninstall
+
+    compile
+
+    cd $soft_path
+
+    git_file=$(ls | grep git-*.gz)
+    git_dirname="git-${git_version}"
+
+    if [ ! -f "$git_file" ]; then
+        echo -e "${Info}:正在下载git请稍等..."
+        wget -N --no-check-certificate ${coding}/linux/git/git-${git_version}.tar.gz
+    fi
+
+    tar zxvf git-${git_version}.tar.gz
+    cd git-${git_version}
+
+    echo -e "${Info}:开始编译安装 git "
+
+    ./configure --prefix=$git_path
+
+    # -f, --force remove existing destination files
+    ln -sf $git_path/bin/* /usr/bin/
+
+    echo -e "${Info}:配置环境变量"
+    echo "export PATH=$git_path/bin:$PATH" >> /etc/profile
     source /etc/profile
-    git_version=`git --version`
-   
+
+    echo -e "${Info}:测试是否安装成功"
+    git --version
+
 }
 
-# 卸载git
-uninstall_git(){
-    echo -e "开始卸载卸载git"
-	yum remove git
-    rm -rf /opt/dev_soft/git-2.9.5
-	rm -rf /usr/local/git
-	rm -rf /usr/local/git/bin/git
-	rm -rf /usr/local/git/bin/git-cvsserver
-	rm -rf /usr/local/git/bin/gitk
-	rm -rf /usr/local/git/bin/git-receive-pack
-	rm -rf /usr/local/git/bin/git-shell
-	rm -rf /usr/local/git/bin/git-upload-archive
-	rm -rf /usr/local/git/bin/git-upload-pack
-    echo "git 卸载完成"
+git_lfs(){
+    git_shell=`command -v git`
+    if [[ ${git_shell} == "/usr/local/git/bin/git" ||  ]]; then
+        git_lfs_install
+    else
+        echo -e "${Info}:no exists git，是否安装 git 后在进行安装 Git lfs ？[Y/n]"
+		read -p "(默认: y):" yn
+		[[ -z "${yn}" ]] && yn="y"
+		if [[ ${yn} == [Yy] ]]; then
+			git
+            git_lfs_install
+		else
+			echo && echo "	已取消..." && echo
+		fi
+        sleep 5s 
+    fi
 }
 
+git_lfs_install(){
+    echo -e "${Info}:开始安装 git lfs"
+    yum install -y epel-release
+    curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.rpm.sh | bash
+    yum install -y git-lfs
+    echo -e "${Info}:初始化 git lfs"
+    git lfs install
+}
+
+git_uninstall(){
+    echo -e "${Info}:开始卸载原有git"
+	yum remove -y git
+	rm -rf $git_path
+    rm -rf $soft_path/git-${git_version}
+    rm -rf $soft_path/git-${git_version}.tar.gz
+}
 #================== jdk =============================
 
 # oracle  jdk install
 jdk(){
-    # 初始化文件夹
-    if [ ! -d "$jdk_Path" ]; then
-        echo -e "正在创建$jdk_Path目录"
-        sudo mkdir $jdk_Path
-        echo -e "目录$jdk_Path创建成功"
-    fi
 
+    jdk_uninstall
+
+    java
+
+    cd $soft_path
+    
     jdk_file=$(ls | grep jdk-*-linux-*.gz)
-    jdk_dirname="jdk1.8.0_201"
+    jdk_dirname="jdk1.8.0_${jdk_version}"
 
     if [ ! -f "$jdk_file" ]; then
-    echo -e "正在下载jdk请稍等..."
-    wget -N --no-check-certificate https://${coding}/linux/java/jdk-8u221-linux-x64.tar.gz
+        echo -e "${Info}: 正在下载jdk请稍等..."
+        wget -N --no-check-certificate ${coding}/linux/java/jdk-8u${jdk_version}-linux-x64.tar.gz
     fi
 
-    if [ -f "$jdk_file" ]; then
+    echo -e "${Info}: 开始安装JDK"
+    tar -zxvf jdk-8u${jdk_version}-linux-x64.tar.gz -C $java_Path
+   
+    echo -e "${Info}: 配置环境变量"
+    cp /etc/profile /etc/profile.backup
+    echo -e "export JAVA_HOME=$java_Path/$jdk_dirname" >> /etc/profile
+    echo -e "export CLASSPATH=.:\$JAVA_HOME/lib/dt.jar:\$JAVA_HOME/lib/tools.jar" >> /etc/profile
+    echo -e "export PATH=\$PATH:\$JAVA_HOME/bin:" >> /etc/profile
+    source /etc/profile
 
-        sudo tar -zxvf $jdk_file -C /usr/local/java/
-        echo -e "安装JDK成功"
-
-        echo -e "配置环境变量"
-        cp /etc/profile /etc/profile.backup
-        echo -e "export JAVA_HOME=$jdk_Path/$jdk_dirname" >> /etc/profile
-        echo -e "export CLASSPATH=.:\$JAVA_HOME/lib/dt.jar:\$JAVA_HOME/lib/tools.jar" >> /etc/profile
-        echo -e "export PATH=\$PATH:\$JAVA_HOME/bin:" >> /etc/profile
-        source /etc/profile
-        echo -e "配置环境成功"
-        jdk_test
-    fi
+    jdk_test
 }
 
 # open_jdk 
 open_jdk(){
+
+    jdk_uninstall
+
+    echo -e "${Info}: 开始安装JDK"
     if [[ "${release}" == "centos" ]]; then
         yum -y install  java-1.8.0-openjdk-headless java-1.8.0-openjdk java-1.8.0-openjdk-devel 
     elif [[ "${release}" = "ubuntu" || "${release}" = "debian" ]];then
         apt-get -y install openjdk-8-jre openjdk-8-jdk
     fi
+
     jdk_test
 }
 
 jdk_test(){
-    echo -e "测试是否安装成功"
+    echo -e "${Info}: 测试是否安装成功"
     java -version
-    echo -e "安装成功"
 }
 
+jdk_uninstall(){
+    echo -e "${Info}:开始卸载原有 JDK"
+	yum remove -y java-1.8.0-openjdk-headless java-1.8.0-openjdk java-1.8.0-openjdk-devel 
+	rm -rf $java_Path/jdk1.8.0_${jdk_version}
+    rm -rf $soft_path/jdk-8u${jdk_version}-linux-x64.tar.gz
+    sed -i '/JAVA_HOME/d' /etc/profile
+}
 
 #================== maven =============================
 
 # maven install
 maven(){
-    # 初始化安装目录
-    if [ ! -d "$maven_path" ]; then
-        echo -e "正在创建$maven_path目录"
-        sudo mkdir $maven_path
-        echo -e "目录$maven_path创建成功"
+    echo -e "${Tip}安装maven 之前必须安装 JDK"
+    
+    java
+
+    maven_uninstall
+
+    cd $soft_path
+    
+    maven_file=$(ls | grep apache-maven-*.gz)
+    maven_dirname="apache-maven-${maven_version}"
+
+    if [ ! -f "$maven_file" ]; then
+       echo -e "${Info}:正在下载 Maven 安装包，请稍等..."
+       wget -N --no-check-certificate ${coding}/linux/java/apache-maven-${maven_version}-bin.tar.gz
     fi
 
-    #apache-maven-3.6
-    echo -e "正在下载maven安装包，请稍等..."
+    echo -e "${Info}: 开始安装 Maven "
+    tar -zxvf apache-maven-${maven_version}-bin.tar.gz -C $java_Path
+    
+    echo -e "${Info}:配置环境变量"
+    echo -e "export M2_HOME=$java_path/$maven_dirname" >> /etc/profile
+    echo -e "export PATH=\$PATH:\$M2_HOME/bin:" >> /etc/profile
+    source /etc/profile
 
-    wget --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://211.162.31.136/files/71480000031E20AE/mirrors.hust.edu.cn/apache/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.tar.gz"
+    echo $java_path
 
-    maven_file =$(ls | grep apache*maven-*.gz)
-
-
-    if [ -f "$maven_file" ]; then
-
-        #这个名字其实就是mvn .tar.gz解压之后的文件夹的名字
-        mvndirname="apache-maven-3.6.0"
-
-        #不能加 用'zxvf' 加了 z 就创建了包里面的apace* 文件夹，而我们只要把apace*文件夹下的文件全部解压到 maven_path里面就好
-        tar zxvf $maven_file -C $maven_path
-
-        echo -e "安装maven成功"
-        echo "配置环境变量"
-
-        mv ~/.bashrc ~/.bashrc.backup.mvn
-        cat ~/.bashrc.backup.mvn >> ~/.bashrc
-
-        echo -e "PATH=\"$PATH:$maven_path/$mvndirname/bin\"" >> ~/.bashrc
-        echo -e "MAVEN_HOME=$maven_path/$mvndirname" >> ~/.bashrc
-
-        source ~/.bashrc
-
-        echo -e "配置环境成功"
-        echo -e "测试是否安装成功"
-        mvn -v
-        echo -e "安装成功"
-    else
-        echo -e "没有找到maven文件"
-    fi
+    echo -e "${Info}:测试是否安装成功"
+    mvn -v
 }
 
+maven_uninstall(){
+    echo -e "${Info}:开始卸载原有 maven 组件"
+	rm -rf $java_Path/apache-maven-${maven_version}
+    # rm -rf $soft_path/apache-maven-${maven_version}-bin.tar.gz
+    sed -i '/M2_HOME/d' /etc/profile
+}
 
 #############系统开发环境组件  end #############
 
@@ -197,41 +249,42 @@ root(){
 
 # 初始化环境
 init(){
+    # 初始化软件文件夹
+    echo -e "${Info} 初始化安装软件文件夹"
+    if [ ! -d "$soft_path" ]; then
+        echo -e "正在创建$soft_path目录"
+        mkdir -p $soft_path
+        echo -e "目录$soft_path创建成功"
+    fi
+
     if [[ "${release}" = "centos" ]];then
        init_centos
     elif [[ "${release}" = "ubuntu" || "${release}" = "debian" ]];then
-        init_debain_ubuntu
+       init_debain_ubuntu
     fi
 }
 
 # 基础环境组件 centos
 init_centos(){ 
     echo -e "${Info}:================== 开始进行初始化环境 ============================="
-    echo -e "安装开发工具---> Development Tools"
-    yum -y groupinstall 'Development Tools'
-    echo -e "安装开发工具完成"
-    echo -e "安装系统编译组件 ---> gcc gcc-c++ make libtool zlib zlib-devel openssl openssl-devel pcre pcre-devel curl-devel expat-devel gettext-devel perl-ExtUtils-MakeMaker"
-    yum -y install gcc gcc-c++ make libtool zlib zlib-devel openssl openssl-devel pcre pcre-devel curl-devel expat-devel gettext-devel perl-ExtUtils-MakeMaker 
-    echo -e "安装系统编译组件完成"
-    echo -e "安装 ---> wget"
-    yum install -y curl wget
-    echo -e "安装 ---> wget 完成"   
+    echo -e "${Info}:更新系统缓存"
+    yum -y update 
+    echo -e "${Info}:安装 curl wget vim"
+    yum install -y curl wget vim
     echo -e "${Info}:================== 初始化环境完成 ============================="
 }
 
 # 基础环境组件 debain/ubuntu
 init_debain_ubuntu(){
     echo -e "${Info}:================== 开始进行初始化环境 ============================="
-    echo -e "安装开发工具---> Development Tools"
-    yum -y groupinstall 'Development Tools'
-    echo -e "安装开发工具完成"
+    echo -e "安装更新系统缓存"
+    apt-get -y update
     echo -e "安装系统编译组件 ---> gcc gcc-c++ make libtool zlib zlib-devel openssl openssl-devel pcre pcre-devel curl-devel expat-devel gettext-devel perl-ExtUtils-MakeMaker"
-    yum -y install gcc gcc-c++ make libtool zlib zlib-devel openssl openssl-devel pcre pcre-devel curl-devel expat-devel gettext-devel perl-ExtUtils-MakeMaker 
-    echo -e "安装系统编译组件完成"
+    apt-get -y install gcc gcc-c++ make libtool zlib zlib-devel openssl openssl-devel pcre pcre-devel curl-devel expat-devel gettext-devel perl-ExtUtils-MakeMaker 
     echo -e "安装 ---> wget"
     apt-get install -y curl wget
-    echo -e "安装 ---> wget 完成"   
 }
+
 
 #更新脚本
 Update_Shell(){
@@ -263,22 +316,23 @@ Linux开发环境 一键安装管理脚本 ${Red_font_prefix}[v${shell_version}]
   
  ${Green_font_prefix}0.${Font_color_suffix} 初始化安装环境  
 ———————————— 开发环境(Java) ————————————
- ${Green_font_prefix}11.${Font_color_suffix} 安装 Oracle-JDK(v${jdk_version})
+ ${Green_font_prefix}11.${Font_color_suffix} 安装 Oracle-JDK(v8u${jdk_version})
  ${Green_font_prefix}12.${Font_color_suffix} 安装 Open-JDK(v1.8.0)
  ${Green_font_prefix}13.${Font_color_suffix} 安装 Maven(v${maven_version})
  ${Green_font_prefix}14.${Font_color_suffix} 安装 Nuxus(v${nuxus_version}) 
  ${Green_font_prefix}15.${Font_color_suffix} 安装 Gradle(v${gradle_version}) 
  ${Green_font_prefix}16.${Font_color_suffix} 安装 MySQL(v${mysql_version})
+ ${Green_font_prefix}16.${Font_color_suffix} 安装 Tomcat(v${tomcat_version})
 ———————————— 运维环境 —————————————————
  ${Green_font_prefix}21.${Font_color_suffix} 安装 Git
  ${Green_font_prefix}22.${Font_color_suffix} 安装 Jenkins
  ${Green_font_prefix}23.${Font_color_suffix} 安装 Nginx
+ ${Green_font_prefix}24.${Font_color_suffix} 安装 Git LFS
 ———————————— 杂项管理 —————————————————
  ${Green_font_prefix}1.${Font_color_suffix} 升级脚本
  ${Green_font_prefix}2.${Font_color_suffix} 退出脚本
 ——————————————————————————————————————" && echo
 
-echo
 read -p " 请输入选项 :" num
 case "$num" in
 	0)
@@ -297,7 +351,7 @@ case "$num" in
 	open_jdk
 	;;
 	13)
-	check_sys_Lotsever
+	maven
 	;;
 	14)
 	startbbr
@@ -309,7 +363,7 @@ case "$num" in
 	startbbrmod_nanqinlang
 	;;
 	21)
-	startbbrplus
+	git
 	;;
 	22)
 	startlotserver
@@ -317,10 +371,13 @@ case "$num" in
 	23)
 	remove_all
 	;;
+    24)
+	git_lfs
+	;;
 	*)
 	clear
 	echo -e "${Error}:请输入正确选项："
-	sleep 5s
+	sleep 3s
 	start_menu
 	;;
 esac
@@ -365,3 +422,7 @@ check_linux_version(){
 }
 
 #############系统检测组件 end #############
+check_system_version
+check_linux_version
+[[ ${release} != "debian" ]] && [[ ${release} != "ubuntu" ]] && [[ ${release} != "centos" ]] && echo -e "${Error} 本脚本不支持当前系统 ${release} !" && exit 1
+start_menu
