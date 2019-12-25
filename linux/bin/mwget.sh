@@ -44,5 +44,3 @@ make && make install
 }
 
 install
-
-install
