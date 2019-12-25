@@ -11,7 +11,7 @@ start)  
     sh $CATALINA_HOME/bin/startup.sh  
 ;;   
 
-stop)    
+stop)
     echo "Stopping Tomcat..." 
     sh $CATALINA_HOME/bin/shutdown.sh  
 ;;

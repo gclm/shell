@@ -1,4 +1,5 @@
 #!/bin/sh
+
 ## java env
 export JAVA_HOME=/opt/dev_tools/jdk1.8.0_181
 export JRE_HOME=$JAVA_HOME/jre
