@@ -36,11 +36,11 @@ mysql_version=""
 git_version="2.9.5"
 
 # 远程安装包地址
-coding="https://dev.tencent.com/u/gclm/p/shell/git/raw/master"
+coding="https://dev.tencent.com/u/gclm/p/shell/git/raw/master/linux/resources"
 
 #==================基础配置 end =============================
 
-init(){
+install(){
 
 echo -e "${Info}:================== 开始进行初始化环境 ============================="
 
@@ -70,4 +70,4 @@ fi
 
 }
 
-init
+install

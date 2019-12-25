@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 #==================基础配置 start ============================
 
 # 字体样式
@@ -18,6 +17,7 @@ soft_path="/opt/software"
 module_path="/opt/module"
 
 # 版本
+axel_verson="2.17.6"
 shell_version="0.0.4"
 maven_version="3.6.2"
 jdk_version="221"
@@ -32,19 +32,22 @@ coding="https://dev.tencent.com/u/gclm/p/shell/git/raw/master/linux/resources"
 
 #==================基础配置 end =============================
 
-
 install(){
 
-echo -e "${Info}: 开始安装 Jenkins"
-rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+#下载源码包
+wget -O axel-${axel_verson}.tar.gz https://github.com/axel-download-accelerator/axel/releases/download/v${axel_verson}/axel-${axel_verson}.tar.gz
+#解压
+tar xzvf axel-${axel_verson}.tar.gz
+#进入目录
+cd axel-${axel_verson}/
+#检查编译
+./configure --prefix=/usr/local/axel
+make && make install
+#axel 执行路径
+echo 'PATH=/usr/local/axel/bin:$PATH' > /etc/profile.d/axel.sh
+#使文件生效
+source /etc/profile
 
-cd $soft_path
-
-axel -n
-
-yum localinstall -y
-yum install -y jenkins
 }
 
 install
-
