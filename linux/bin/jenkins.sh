@@ -26,24 +26,23 @@ gradle_version=""
 nexus_version="3.19.1-01"
 mysql_version=""
 git_version="2.9.5"
+jenkins_version=""
 
 # 远程安装包地址
 coding="https://dev.tencent.com/u/gclm/p/shell/git/raw/master/linux/resources"
 
 #==================基础配置 end =============================
 
-
 install(){
 
 echo -e "${Info}: 开始安装 Jenkins"
-rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
 
 cd $soft_path
-
-axel -n
-
-yum localinstall -y
+rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+mwget ${coding}/jenkins/jenkins-2.204.1-1.1.noarch.rpm
+yum localinstall -y jenkins-2.204.1-1.1.noarch.rpm
 yum install -y jenkins
+
 }
 
 install
