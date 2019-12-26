@@ -26,15 +26,18 @@ gradle_version=""
 nexus_version="3.19.1-01"
 mysql_version=""
 git_version="2.9.5"
+mwget_version="0.1.0"
 
 # 远程安装包地址
-coding="https://dev.tencent.com/u/gclm/p/shell/git/raw/master/linux/resources"
+coding="https://dev.tencent.com/u/gclm/p/resources/git/raw/master/"
 
 #==================基础配置 end =============================
 
 install(){
 
-wget http://jaist.dl.sourceforge.net/project/kmphpfm/mwget/0.1/mwget_0.1.0.orig.tar.bz2
+# wget https://dev.tencent.com/u/gclm/p/resources/git/raw/master/mwget/mwget_0.1.0.orig.tar.bz2
+
+wget ${coding}/mwget/mwget_0.1.0.orig.tar.bz2
 tar -xjvf mwget_0.1.0.orig.tar.bz2
 cd mwget_0.1.0.orig
 ./configure
