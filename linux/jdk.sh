@@ -43,9 +43,8 @@ coding="https://dev.tencent.com/u/gclm/p/resources/git/raw/master/"
 init(){
     # 初始化安装目录
     if [ ! -d "$java_Path" ]; then
-        echo -e "正在创建$java_Path目录"
         mkdir -p $java_Path
-        echo -e "目录$java_Path创建成功"
+        echo -e "创建$java_Path目录创建成功"
     fi
 }
 
@@ -62,7 +61,7 @@ install(){
 
     if [ ! -f "$jdk_file" ]; then
         echo -e "${Info}: 正在下载jdk请稍等..."
-        wget -N --no-check-certificate ${coding}/linux/java/jdk-8u${jdk_version}-linux-x64.tar.gz
+        wget -N --no-check-certificate ${coding}/jdk/jdk-8u${jdk_version}-linux-x64.tar.gz
     fi
 
     echo -e "${Info}: 开始安装JDK"

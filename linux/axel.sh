@@ -35,7 +35,7 @@ coding="https://dev.tencent.com/u/gclm/p/resources/git/raw/master/"
 install(){
 
 #下载源码包
-wget -O axel-${axel_verson}.tar.gz https://github.com/axel-download-accelerator/axel/releases/download/v${axel_verson}/axel-${axel_verson}.tar.gz
+wget -O axel-${axel_verson}.tar.gz ${coding}/axel/axel-${axel_verson}.tar.gz
 #解压
 tar xzvf axel-${axel_verson}.tar.gz
 #进入目录
