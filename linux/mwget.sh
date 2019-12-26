@@ -29,7 +29,7 @@ git_version="2.9.5"
 mwget_version="0.1.0"
 
 # 远程安装包地址
-coding="https://dev.tencent.com/u/gclm/p/resources/git/raw/master/"
+coding="https://dev.tencent.com/u/gclm/p/resources/git/raw/master"
 
 #==================基础配置 end =============================
 
