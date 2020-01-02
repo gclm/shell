@@ -12,3 +12,8 @@
 ```
 wget  https://dev.tencent.com/u/gclm/p/shell/git/raw/master/mysql.sh && chmod +x mysql.sh && bash mysql.sh
 ```
+
+## Docker 安装脚本
+```
+curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun
+```
