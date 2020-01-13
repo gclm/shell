@@ -35,6 +35,7 @@ mysql_version=""
 git_version="2.9.5"
 
 # 远程安装包地址
+#https://dev.tencent.com/u/gclm/p/resources/git/raw/master/README.md
 coding="https://dev.tencent.com/u/gclm/p/resources/git/raw/master"
 
 #==================基础配置 end =============================
