@@ -29,7 +29,7 @@ shell_version="1.0.0"
 jdk_version="241"
 maven_version="3.6.3"
 git_version="2.25.0"
-gradle_version=""
+gradle_version="5.6.4"
 nexus_version="3.20.1-01"
 
 # 远程安装包地址
@@ -71,6 +71,11 @@ wget ${shell}/git.sh  && chmod +x git.sh
 init_nginx(){
 wget ${shell}/nginx.sh  && chmod +x nginx.sh
 . ./nginx.sh
+}
+
+init_gradle(){
+wget ${shell}/gradle.sh  && chmod +x gradle.sh
+. ./gradle.sh
 }
 
 #================== jenkins =============================
@@ -129,7 +134,7 @@ case "$num" in
 	init_nexus
 	;;
 	15)
-	startbbrmod
+	init_gradle
 	;;
     21)
 	init_git
