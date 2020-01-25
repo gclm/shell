@@ -25,7 +25,7 @@ soft_path="/opt/software"
 module_path="/opt/module"
 
 # 版本
-shell_version="1.0.1"
+shell_version="1.0.2"
 jdk_version="241"
 maven_version="3.6.3"
 git_version="2.25.0"
@@ -130,7 +130,6 @@ Linux开发环境 一键安装管理脚本 ${Red_font_prefix}[v${shell_version}]
  ${Green_font_prefix}1.${Font_color_suffix} 升级脚本
  ${Green_font_prefix}2.${Font_color_suffix} 退出脚本
 ——————————————————————————————————————
-
  ${Red_font_prefix}请先初始化环境在进行其他操作${Font_color_suffix}
 ——————————————————————————————————————" && echo
 
