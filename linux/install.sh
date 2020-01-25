@@ -31,6 +31,7 @@ maven_version="3.6.3"
 git_version="2.25.0"
 gradle_version="5.6.4"
 nexus_version="3.20.1-01"
+axel_version="2.17.6"
 
 # 远程安装包地址
 #https://gclm.coding.net/p/LinuxSoftwares/d/LinuxSoftwares/git/raw/master/README.md
@@ -44,9 +45,13 @@ wget ${shell}/axel.sh  && chmod +x axel.sh
 wget ${shell}/shell.sh  && chmod +x shell.sh
 
 # 执行相关脚本
+
+. ./shell.sh
+
+init(){
 . ./init.sh
 . ./axel.sh
-. ./shell.sh
+}
 
 init_jdk(){
 wget ${shell}/jdk.sh  && chmod +x jdk.sh
@@ -94,6 +99,7 @@ echo -e "
 Linux开发环境 一键安装管理脚本 ${Red_font_prefix}[v${shell_version}]${Font_color_suffix}
   -- 孤城落寞博客 | blog.gclmit.club --
 
+ ${Green_font_prefix}0.${Font_color_suffix}  初始化环境
 ———————————— 开发环境(Java) ————————————
  ${Green_font_prefix}11.${Font_color_suffix} 安装 Oracle-JDK(v8u${jdk_version})
  ${Green_font_prefix}12.${Font_color_suffix} 安装 Open-JDK(v1.8.x)
@@ -107,17 +113,23 @@ Linux开发环境 一键安装管理脚本 ${Red_font_prefix}[v${shell_version}]
  ${Green_font_prefix}24.${Font_color_suffix} 安装 Jenkins
 ———————————— 杂项管理 —————————————————
  ${Green_font_prefix}1.${Font_color_suffix} 升级脚本
- ${Green_font_prefix}0.${Font_color_suffix} 退出脚本
+ ${Green_font_prefix}2.${Font_color_suffix} 退出脚本
+——————————————————————————————————————
+
+ ${Red_font_prefix}请先初始化环境在进行其他操作${Font_color_suffix}
 ——————————————————————————————————————" && echo
 
 read -p " 请输入选项 :" num
 case "$num" in
 	0)
-#	rm -rf *.sh
-	exit 1
+	init
 	;;
     1)
 	update_shell
+	;;
+	2)
+	#	rm -rf *.sh
+	exit 1
 	;;
 	11)
 	init_jdk
