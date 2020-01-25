@@ -25,7 +25,7 @@ nexus(){
 
     if [ ! -f "$nexus_file" ]; then
         echo -e "${Info}:正在下载 nexus 请稍等..."
-        wget -N --no-check-certificate ${coding}/linux/nexus/nexus-${nexus_version}-unix.tar.gz
+        wget -N --no-check-certificate ${coding}/nexus/nexus-${nexus_version}-unix.tar.gz
     fi
 
     tar zxvf nexus-${nexus_version}-unix.tar.gz -C $nexus_path

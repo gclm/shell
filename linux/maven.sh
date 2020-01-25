@@ -26,7 +26,7 @@ maven(){
 
     if [ ! -f "$maven_file" ]; then
        echo -e "${Info}:正在下载 Maven 安装包，请稍等..."
-       wget -N --no-check-certificate ${coding}/linux/java/apache-maven-${maven_version}-bin.tar.gz
+       wget -N --no-check-certificate ${coding}/maven/apache-maven-${maven_version}-bin.tar.gz
     fi
 
     echo -e "${Info}: 开始安装 Maven "

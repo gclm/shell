@@ -15,7 +15,7 @@ git_install(){
 
     if [ ! -f "$git_file" ]; then
         echo -e "${Info}:正在下载git请稍等..."
-        wget -N --no-check-certificate ${coding}/linux/git/git-${git_version}.tar.gz
+        wget -N --no-check-certificate ${coding}/git/git-${git_version}.tar.gz
     fi
 
     tar zxvf git-${git_version}.tar.gz
