@@ -66,9 +66,17 @@ check_linux_version(){
 		bit="x32"
 	fi
 }
+# 采用 root 权限使用该脚本
+root(){
+   #判断是否是roo用户
+   if [ $(id -u) != "0" ]; then
+        echo "请使用 root 用户运行该脚本"
+   fi
+}
 
 #############系统检测组件 end #############
 check_system_version
 check_linux_version
 [[ ${release} != "centos" ]] && echo -e "${Error} 本脚本不支持当前系统 ${release} !" && exit 1
+root
 init
