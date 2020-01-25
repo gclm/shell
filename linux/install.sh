@@ -25,13 +25,13 @@ soft_path="/opt/software"
 module_path="/opt/module"
 
 # 版本
-shell_version="1.0.0"
+shell_version="1.0.1"
 jdk_version="241"
 maven_version="3.6.3"
 git_version="2.25.0"
 gradle_version="5.6.4"
 nexus_version="3.20.1-01"
-axel_version="2.17.6"
+axel_verson="2.17.6"
 
 # 远程安装包地址
 #https://gclm.coding.net/p/LinuxSoftwares/d/LinuxSoftwares/git/raw/master/README.md
