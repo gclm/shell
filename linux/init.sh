@@ -1,46 +1,7 @@
 #!/usr/bin/env bash
 
-
-#=================================================
-#	System Required: CentOS 7,Debian 8/9,Ubuntu 16+
-#	Description: 开发环境搭建脚本 for linux
-#	Version: 1.0.0
-#	Author:  孤城落寞
-#	Blog: https://blog.gclmit.club/
-#=================================================
-
-#==================基础配置 start ============================
-
-# 字体样式
-Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
-Info="${Green_font_prefix}[信息]${Font_color_suffix}"
-Error="${Red_font_prefix}[错误]${Font_color_suffix}"
-Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
-
-# 安装路径
-base_path="/usr/local"
-java_Path="$base_path/java"
-git_path="$base_path/git"
-nexus_path="$base_path/nexus"
-soft_path="/opt/software"
-module_path="/opt/module"
-
-# 版本
-shell_version="0.0.4"
-maven_version="3.6.2"
-jdk_version="221"
-tomcat_version="9.0.19"
-gradle_version=""
-nexus_version="3.19.1-01"
-mysql_version=""
-git_version="2.9.5"
-
-# 远程安装包地址
-coding="https://dev.tencent.com/u/gclm/p/resources/git/raw/master"
-
-#==================基础配置 end =============================
-
-install(){
+#初始化Linux环境
+init(){
 
 echo -e "${Info}:================== 开始进行初始化环境 ============================="
 
@@ -70,4 +31,44 @@ fi
 
 }
 
-install
+#############系统检测组件 start #############
+
+#检查系统
+check_system_version(){
+	if [[ -f /etc/redhat-release ]]; then
+		release="centos"
+	elif cat /etc/issue | grep -q -E -i "debian"; then
+		release="debian"
+	elif cat /etc/issue | grep -q -E -i "ubuntu"; then
+		release="ubuntu"
+	elif cat /etc/issue | grep -q -E -i "centos|red hat|redhat"; then
+		release="centos"
+	elif cat /proc/version | grep -q -E -i "debian"; then
+		release="debian"
+	elif cat /proc/version | grep -q -E -i "ubuntu"; then
+		release="ubuntu"
+	elif cat /proc/version | grep -q -E -i "centos|red hat|redhat"; then
+		release="centos"
+    fi
+}
+
+#检查Linux版本
+check_linux_version(){
+	if [[ -s /etc/redhat-release ]]; then
+		version=`grep -oE  "[0-9.]+" /etc/redhat-release | cut -d . -f 1`
+	else
+		version=`grep -oE  "[0-9.]+" /etc/issue | cut -d . -f 1`
+	fi
+	bit=`uname -m`
+	if [[ ${bit} = "x86_64" ]]; then
+		bit="x64"
+	else
+		bit="x32"
+	fi
+}
+
+#############系统检测组件 end #############
+check_system_version
+check_linux_version
+[[ ${release} != "centos" ]] && echo -e "${Error} 本脚本不支持当前系统 ${release} !" && exit 1
+init
