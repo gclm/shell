@@ -25,7 +25,7 @@ soft_path="/opt/software"
 module_path="/opt/module"
 
 # 版本
-shell_version="1.0.2"
+shell_version="1.0.3"
 jdk_version="241"
 maven_version="3.6.3"
 git_version="2.25.0"
@@ -142,39 +142,47 @@ case "$num" in
 	update_shell
 	;;
 	2)
-	rm -rf *.sh
 	exit 1
 	;;
 	11)
 	init_jdk
 	jdk
+	rm -rf jdk.sh
 	;;
 	12)
 	init_jdk
 	open_jdk
+	rm -rf jdk.sh
 	;;
 	13)
 	init_maven
+	rm -rf maven.sh
 	;;
 	14)
 	init_nexus
+	rm -rf nexus.sh
 	;;
 	15)
 	init_gradle
+	rm -rf gradle.sh
 	;;
     21)
 	init_git
 	git_install
+	rm -rf git.sh
 	;;
 	22)
 	init_git
 	git_lfs
+	rm -rf git.sh
 	;;
 	23)
 	init_nginx
+	rm -rf nginx.sh
 	;;
     24)
     jenkins
+    rm -rf jenkins.sh
 	;;
 	*)
 	clear

@@ -35,14 +35,13 @@ gradle(){
     echo -e "${Info}:配置环境变量"
     echo -e "export GRADLE_HOME=/usr/local/java/$gradle_dirname" >> /etc/profile
     echo -e "export PATH=\$PATH:\$GRADLE_HOME/bin:" >> /etc/profile
-    source /etc/profile
 
-    echo $java_path
+    source /etc/profile
 
     echo -e "${Info}:测试是否安装成功"
 
     gradle -v
-
+    exit 1
 }
 
 gradle_uninstall(){
