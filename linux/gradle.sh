@@ -2,7 +2,7 @@
 
 # 初始化安装目录
 init(){
-
+yum install -y zip
 if [ ! -d "$java_Path" ]; then
     echo -e "正在创建$java_Path目录"
     mkdir -p $java_Path
@@ -21,16 +21,16 @@ gradle(){
 
     cd $soft_path
 
-    gradle_file=$(ls | grep gradle-*.gz)
+    gradle_file=$(ls | grep gradle-*.zip)
     gradle_dirname="gradle-${gradle_version}"
 
     if [ ! -f "$gradle_file" ]; then
        echo -e "${Info}:正在下载 Gradle 安装包，请稍等..."
-       wget -N --no-check-certificate ${coding}/gradle/gradle-${gradle_version}-bin.tar.gz
+       wget -N --no-check-certificate ${coding}/gradle/gradle-${gradle_version}-bin.zip
     fi
 
     echo -e "${Info}: 开始安装 Gradle "
-    tar -zxvf gradle-${gradle_version}-bin.tar.gz -C $java_Path
+    unzip gradle-${gradle_version}-bin.zip -d $java_Path
 
     echo -e "${Info}:配置环境变量"
     echo -e "export GRADLE_HOME=/usr/local/java/$gradle_dirname" >> /etc/profile
@@ -40,7 +40,9 @@ gradle(){
     echo $java_path
 
     echo -e "${Info}:测试是否安装成功"
+
     gradle -v
+
 }
 
 gradle_uninstall(){
