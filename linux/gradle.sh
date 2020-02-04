@@ -47,9 +47,7 @@ gradle(){
 gradle_uninstall(){
     echo -e "${Info}:开始卸载原有 maven 组件"
 	rm -rf $java_Path/gradle-${maven_version}
-    rm -rf $soft_path/gradle-${maven_version}-bin.tar.gz
+    rm -rf $soft_path/gradle-${maven_version}-bin.zip
     sed -i '/GRADLE_HOME/d' /etc/profile
     source /etc/profile
 }
-
-gradle

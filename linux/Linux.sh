@@ -75,13 +75,14 @@ wget ${shell}/nginx.sh  && chmod +x nginx.sh
 init_gradle(){
 wget ${shell}/gradle.sh  && chmod +x gradle.sh
 . ./gradle.sh
+
 }
 
 #================== jenkins =============================
 
 jenkins(){
     echo -e "${Info}: 开始安装 Jenkins"
-    wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+    wget -N --no-check-certificate -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
     rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
     yum install -y jenkins
 }
@@ -89,14 +90,14 @@ jenkins(){
 #更新脚本
 update_shell(){
 	echo -e "当前版本为 [ ${shell_version} ]，开始检测最新版本..."
-	shell_new_version=$(wget --no-check-certificate -qO- "http://${coding}/linux/Linux.sh"|grep 'shell_version="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1)
+	shell_new_version=$(wget --no-check-certificate -q "${shell}/Linux.sh"|grep 'shell_version="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1)
 	[[ -z ${shell_new_version} ]] && echo -e "${Error} 检测最新版本失败 !" && start_menu
 	if [[ ${shell_new_version} != ${shell_version} ]]; then
 		echo -e "发现新版本[ ${shell_new_version} ]，是否更新？[Y/n]"
 		read -p "(默认: y):" yn
 		[[ -z "${yn}" ]] && yn="y"
 		if [[ ${yn} == [Yy] ]]; then
-			wget -N --no-check-certificate http://${github}/linux/Linux.sh && chmod +x Linux.sh
+			wget -N --no-check-certificate -O ${shell}/Linux.sh && chmod +x Linux.sh
 			echo -e "脚本已更新为最新版本[ ${shell_new_version} ] !"
 		else
 			echo && echo "	已取消..." && echo
@@ -164,7 +165,7 @@ case "$num" in
 	;;
 	15)
 	init_gradle
-	rm -rf gradle.sh
+
 	;;
     21)
 	init_git
