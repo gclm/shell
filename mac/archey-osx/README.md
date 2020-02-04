@@ -15,7 +15,8 @@ $ sh -c "$(curl -fsSL https://raw.githubusercontent.com/gclm/shell/master/mac/ar
 
 ## Installation/安装
 ```
-$ cd && git clone https://github.com/gclm/shell
+$ cd && wget https://github.com/gclm/shell/releases/download/v1.0/archey-osx.tar.gz
+$ tar zxvf archey-osx.tar.gz
 $ sudo mv archey-osx/ /usr/local/ 
 $ sudo ln -s /usr/local/archey-osx/bin/archey /usr/local/bin/archey #中文版
 $ sudo ln -s /usr/local/archey-osx/bin/archey-en /usr/local/bin/archey-en #英文版
