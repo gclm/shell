@@ -5,14 +5,13 @@
 ```
 $ sh -c "$(curl -fsSL https://raw.githubusercontent.com/gclm/shell/master/mac/archey-osx/bin/archey-en)"
 ```
-
-![screen-en.png](https://raw.githubusercontent.com/gclm/shell/master/mac/archey-osx/screen/screen-en.png)
+![screen-en.png](https://cdn.jsdelivr.net/gh/gclm/images@master/2020/02/04/1580813119937QKPYNN.jpg)
 
 ```
 $ sh -c "$(curl -fsSL https://raw.githubusercontent.com/gclm/shell/master/mac/archey-osx/bin/archey)" 
 ```
 
-![screen-zh_CN.png](https://raw.githubusercontent.com/gclm/shell/master/mac/archey-osx/screen/screen-zh_CN.png)
+![screen-zh_CN.png](https://cdn.jsdelivr.net/gh/gclm/images@master/2020/02/04/1580813123426vhGTDG.jpg)
 
 ## Installation/安装
 ```
