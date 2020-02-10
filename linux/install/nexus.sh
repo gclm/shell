@@ -18,7 +18,7 @@ nexus(){
     useradd -g nexus nexus
     chown -R nexus:nexus /usr/local/nexus
 
-    cd $soft_path
+    cd $module_path
 
     nexus_file=$(ls | grep nexus-*-unix.tar.gz)
     nexus_dirname="nexus-${nexus_version}"

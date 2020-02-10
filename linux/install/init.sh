@@ -3,32 +3,28 @@
 #初始化Linux环境
 init(){
 
-echo -e "${Info}:================== 开始进行初始化环境 ============================="
+    echo -e "${Info}:================== 开始进行初始化环境 ============================="
+    echo -e "${Info}:更新系统缓存"
+    yum -y update
 
-echo -e "${Info}:更新系统缓存"
-yum -y update
+    echo -e "${Info}:修改终端名"
+    hostnamectl set-hostname centos7
+    hostnamectl --pretty
+    hostnamectl --static
+    hostnamectl --transient
 
-echo -e "${Info}:修改终端名"
-hostnamectl set-hostname centos7
-hostnamectl --pretty
-hostnamectl --static
-hostnamectl --transient
+    echo -e "${Info}:安装基础组件"
+    yum install -y curl wget vim
 
-echo -e "${Info}:安装基础组件"
-yum install -y curl wget vim
+    echo -e "${Info}:安装编译环境"
+    yum -y groupinstall 'Development Tools'
 
-echo -e "${Info}:安装编译环境"
-yum -y groupinstall 'Development Tools'
-yum -y install gcc gcc-c++ make libtool zlib zlib-devel openssl openssl-devel pcre pcre-devel curl-devel expat-devel gettext-devel perl-ExtUtils-MakeMaker
-
-# 初始化软件文件夹
-echo -e "${Info} 初始化安装软件文件夹"
-if [ ! -d "$soft_path" ]; then
-    echo -e "正在创建$soft_path目录"
-    mkdir -p $soft_path
-    echo -e "目录$soft_path创建成功"
-fi
-
+    # 初始化软件文件夹
+    echo -e "${Info} 初始化面板环境"
+    mkdir -p $setup_path/server/panel/install
+    mkdir -p $setup_path/backup
+    mkdir -p $setup_path/logs
+    mkdir -p $setup_path/websites
 }
 
 #############系统检测组件 start #############
@@ -75,8 +71,8 @@ root(){
 }
 
 #############系统检测组件 end #############
+root
 check_system_version
 check_linux_version
 [[ ${release} != "centos" ]] && echo -e "${Error} 本脚本不支持当前系统 ${release} !" && exit 1
-root
 init
