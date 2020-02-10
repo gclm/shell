@@ -67,6 +67,7 @@ root(){
    #判断是否是roo用户
    if [ $(id -u) != "0" ]; then
         echo "请使用 root 用户运行该脚本"
+        exit 1
    fi
 }
 

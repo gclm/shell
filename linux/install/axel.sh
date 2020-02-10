@@ -3,8 +3,8 @@
 axel(){
 
 echo -e "初始化axel 安装目录"
-mkdir -p "$base_path/axel"
-mdkir -p "$module_path/axel"
+mkdir -p $base_path/axel
+mdkir -p $module_path/axel
 
 #下载源码包
 wget -O axel-${axel_verson}.tar.gz ${coding}/axel/axel-${axel_verson}.tar.gz
